@@ -78,7 +78,7 @@ pipeline
 			steps
 			{
 				echo "****************** Build Docker image ****************"
-				sh returnStdout: true, script: '/bin/docker build --no-cache -t dtr.nagarro.com:443/dotnetcoreapp_abhinavgoyal:${BUILD_NUMBER} .'
+				sh returnStdout: true, script: '/bin/docker build --no-cache -t dtr.nagarro.com:443/dotnetcoreapp_irfanali:${BUILD_NUMBER} .'
 			}
 		}
 		stage ('Push to DTR')
@@ -86,7 +86,7 @@ pipeline
 			steps
 			{
 				echo "***************** Pushing image to Nagarro DTR or Docker Hub **********"
-				sh returnStdout: true, script: '/bin/docker push dtr.nagarro.com:443/dotnetcoreapp_abhinavgoyal:${BUILD_NUMBER}'
+				sh returnStdout: true, script: '/bin/docker push dtr.nagarro.com:443/dotnetcoreapp_irfanali:${BUILD_NUMBER}'
 			}
 		}
 		stage ('Stop Running container')
@@ -109,7 +109,7 @@ pipeline
 			steps
 			{
 			   echo "*************** Deploying latest war on Docker Containers **************"
-			   sh 'docker run --name dotnetcoreapp_abhinavgoyal -d -p 5006:80 dtr.nagarro.com:443/dotnetcoreapp_abhinavgoyal:${BUILD_NUMBER}'
+			   sh 'docker run --name dotnetcoreapp_abhinavgoyal -d -p 5006:80 dtr.nagarro.com:443/dotnetcoreapp_irfanali:${BUILD_NUMBER}'
 			}
 		}
 	}
