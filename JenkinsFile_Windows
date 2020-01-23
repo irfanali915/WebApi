@@ -92,7 +92,13 @@ pipeline
 			steps
 			{
 				echo "***************** Pushing image to Nagarro DTR or Docker Hub **********"
-				bat returnStdout: true, script: 'docker push irfanali915/sample.core.app:%JOB_NAME%_%BUILD_NUMBER% '
+				withCredentials([usernamePassword(credentialsId: 'DockerHubCred', passwordVariable: 'pass', usernameVariable: 'user')]) {
+    					echo "username $user password $pass"
+					bat """
+					docker login -u $user -p $pass
+					docker push irfanali915/sample.core.app:%JOB_NAME%_%BUILD_NUMBER%
+					"""
+				}
 			}
 		}
 		stage ('Stop Running container')
