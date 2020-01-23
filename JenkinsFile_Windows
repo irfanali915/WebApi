@@ -84,7 +84,7 @@ pipeline
 			steps
 			{
 				echo "****************** Build Docker image ****************"
-				sh returnStdout: true, script: '/bin/docker build --no-cache -t dtr.nagarro.com:443/dotnetcoreapp_irfanali:${BUILD_NUMBER} .'
+				bat returnStdout: true, script: '/bin/docker build --no-cache -t dtr.nagarro.com:443/dotnetcoreapp_irfanali:${BUILD_NUMBER} .'
 			}
 		}
 		stage ('Push to DTR')
