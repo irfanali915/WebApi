@@ -5,17 +5,17 @@ pipeline
 	{
 		scannerHome = tool name: 'sonar_scanner_dotnet', type: 'hudson.plugins.sonar.MsBuildSQRunnerInstallation'   
 	}
+	
 	options
-   {
-      timeout(time: 1, unit: 'HOURS')
-      
-      // Discard old builds after 5 days or 5 builds count.
-      buildDiscarder(logRotator(daysToKeepStr: '5', numToKeepStr: '5'))
-	  
-	  //To avoid concurrent builds to avoid multiple checkouts
-	  disableConcurrentBuilds()
-   }
-		 
+   	{
+      		timeout(time: 1, unit: 'HOURS')
+
+		// Discard old builds after 5 days or 5 builds count.
+		buildDiscarder(logRotator(daysToKeepStr: '5', numToKeepStr: '5'))
+
+		//To avoid concurrent builds to avoid multiple checkouts
+		disableConcurrentBuilds()
+   	}
 	stages
 	{
 		stage ('checkout')
@@ -42,7 +42,6 @@ pipeline
 				echo "*********** starting sonar analysis ***********"
 				withSonarQubeEnv('Test_Sonar')
 				{
-					//bat label: '', script: "dotnet '${scannerHome}\\SonarScanner.MSBuild.exe' begin /k:$JOB_NAME /n:$JOB_NAME /v:1.0 "
 					bat """
 					CD ${scannerHome}
 					dotnet SonarScanner.MSBuild.dll begin /k:$JOB_NAME /n:$JOB_NAME /v:1.0 
@@ -64,10 +63,13 @@ pipeline
 			steps
 			{
 				echo "*************** Executing Sonar analysis ***********"
-			withSonarQubeEnv('Test_Sonar')
-			{
-				bat "dotnet ${scannerHome}/SonarScanner.MSBuild.dll end"
-			}
+				withSonarQubeEnv('Test_Sonar')
+				{
+					bat """
+					CD ${scannerHome}
+					dotnet SonarScanner.MSBuild.dll end
+					"""
+				}
 			}
 		}
 		stage ('Release Artifacts')
