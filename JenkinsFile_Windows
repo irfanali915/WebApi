@@ -84,7 +84,7 @@ pipeline
 			steps
 			{
 				echo "****************** Build Docker image ****************"
-				bat returnStdout: true, script: 'docker build --no-cache -t dtr.nagarro.com:443/dotnetcoreapp_irfanali:${BUILD_NUMBER} .'
+				bat returnStdout: true, script: 'docker build --no-cache -t dtr.nagarro.com:443/dotnetcoreapp_irfanali:%BUILD_NUMBER% .'
 			}
 		}
 		stage ('Push to DTR')
@@ -92,7 +92,7 @@ pipeline
 			steps
 			{
 				echo "***************** Pushing image to Nagarro DTR or Docker Hub **********"
-				bat returnStdout: true, script: 'docker push dtr.nagarro.com:443/dotnetcoreapp_irfanali:${BUILD_NUMBER}'
+				bat returnStdout: true, script: 'docker push dtr.nagarro.com:443/dotnetcoreapp_irfanali:%BUILD_NUMBER% '
 			}
 		}
 		stage ('Stop Running container')
