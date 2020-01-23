@@ -66,8 +66,7 @@ pipeline
 				withSonarQubeEnv('Test_Sonar')
 				{
 					bat """
-					CD ${scannerHome}
-					dotnet SonarScanner.MSBuild.dll end
+					dotnet "${scannerHome}\\SonarScanner.MSBuild.dll" end
 					"""
 				}
 			}
