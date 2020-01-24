@@ -4,8 +4,8 @@
 
 *.dll
 *.user
-/WebApplication4/bin
-/WebApplication4/obj
+/**/bin
+/**/obj
 /Containers
-/.vs/WebApplication4
+/.vs
 /.sonarqube
