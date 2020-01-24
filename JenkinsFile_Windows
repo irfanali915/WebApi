@@ -86,7 +86,7 @@ pipeline
 			steps
 			{
 				echo "****************** Build Docker image ****************"
-				withCredentials([usernamePassword(credentialsId: 'DockerHubCred', usernameVariable: 'user')]) {
+				withCredentials([usernamePassword(credentialsId: 'DockerHubCred', passwordVariable: 'pass', usernameVariable: 'user')]) {
 					bat 'docker build --no-cache -t $user/sample.core.app:%JOB_NAME%_%BUILD_NUMBER% .'
 				}
 			}
@@ -148,7 +148,7 @@ pipeline
 			steps
 			{
 			   echo "*************** Deploying latest war on Docker Containers **************"
-			   withCredentials([usernamePassword(credentialsId: 'DockerHubCred', usernameVariable: 'user')]) {
+			   withCredentials([usernamePassword(credentialsId: 'DockerHubCred', passwordVariable: 'pass', usernameVariable: 'user')]) {
 			   	bat 'docker run --name sample.core.app -d -p 5006:80 $user/sample.core.app:%JOB_NAME%_%BUILD_NUMBER%'
 			   }
 			}
