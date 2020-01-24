@@ -42,8 +42,7 @@ pipeline
 				withSonarQubeEnv('Test_Sonar')
 				{
 					bat """
-					SET scannerHome=${scannerHome}
-					dotnet "%scannerHome%\\SonarScanner.MSBuild.dll" begin /k:$JOB_NAME /n:$JOB_NAME /v:1.0 
+					dotnet "${scannerHome}\\SonarScanner.MSBuild.dll" begin /k:$JOB_NAME /n:$JOB_NAME /v:1.0 
 					"""
 				}
                 
@@ -88,7 +87,7 @@ pipeline
 				echo "****************** Build Docker image ****************"
 				withCredentials([usernamePassword(credentialsId: 'DockerHubCred', passwordVariable: 'pass', usernameVariable: 'user')]) {
 					bat """
-					docker build --no-cache -t $user/sample.core.app:%JOB_NAME%_%BUILD_NUMBER% .
+					docker build --no-cache -t $user/sample.core.app:$JOB_NAME_$BUILD_NUMBER .
 					"""
 				}
 			}
@@ -101,7 +100,7 @@ pipeline
 				withCredentials([usernamePassword(credentialsId: 'DockerHubCred', passwordVariable: 'pass', usernameVariable: 'user')]) {
 					bat """
 					docker login -u $user -p $pass
-					docker push $user/sample.core.app:%JOB_NAME%_%BUILD_NUMBER%
+					docker push $user/sample.core.app:$JOB_NAME_$BUILD_NUMBER
 					"""
 				}
 			}
@@ -152,7 +151,7 @@ pipeline
 			   echo "*************** Deploying latest war on Docker Containers **************"
 			   withCredentials([usernamePassword(credentialsId: 'DockerHubCred', passwordVariable: 'pass', usernameVariable: 'user')]) {
 			   	bat """
-				docker run --name sample.core.app -d -p 5006:80 $user/sample.core.app:%JOB_NAME%_%BUILD_NUMBER%
+				docker run --name sample.core.app -d -p 5006:80 $user/sample.core.app:$JOB_NAME_$BUILD_NUMBER
 				"""
 			   }
 			}
