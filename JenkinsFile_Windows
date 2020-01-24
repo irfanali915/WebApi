@@ -23,7 +23,6 @@ pipeline
 			steps
 			{
 				echo  " ********** Clone starts ******************"
-				//checkout([$class: 'GitSCM', branches: [[name: '*/master']], doGenerateSubmoduleConfigurations: false, extensions: [], gitTool: 'default', submoduleCfg: [], userRemoteConfigs: [[credentialsId: 'b88ca4e2-c290-4634-b441-77891f0979fe', url: 'https://github.com/irfanali915/WebApi.git']]])
 				checkout scm
 			}
 		}
@@ -55,7 +54,7 @@ pipeline
 			steps
 			{
 				echo "************* building the solution **********"
-				bat "dotnet build -c Release -o WebApplication4/app/build"
+				bat "dotnet build -c Release -o WebApplication4\\app\\build"
 			}	
 		}
 		stage ('SonarQube Analysis end')
@@ -76,7 +75,10 @@ pipeline
 			steps
 			{
 				echo "************** Publishing app ***************"
-				bat "dotnet publish -c Release -o WebApplication4/app/publish"
+				bat """
+				rmdir /s /q WebApplication4\\app\\publish>NUL
+				dotnet publish -c Release -o WebApplication4\\app\\publish
+				"""
 			}
 		}
 		stage ('Docker Image')
@@ -84,19 +86,20 @@ pipeline
 			steps
 			{
 				echo "****************** Build Docker image ****************"
-				bat returnStdout: true, script: 'docker build --no-cache -t irfanali915/sample.core.app:%JOB_NAME%_%BUILD_NUMBER% .'
+				withCredentials([usernamePassword(credentialsId: 'DockerHubCred', usernameVariable: 'user')]) {
+					bat 'docker build --no-cache -t $user/sample.core.app:%JOB_NAME%_%BUILD_NUMBER% .'
+				}
 			}
 		}
 		stage ('Push to DTR')
 		{
 			steps
 			{
-				echo "***************** Pushing image to Nagarro DTR or Docker Hub **********"
+				echo "***************** Pushing image to Docker Hub **********"
 				withCredentials([usernamePassword(credentialsId: 'DockerHubCred', passwordVariable: 'pass', usernameVariable: 'user')]) {
-    					echo "username $user password $pass"
 					bat """
 					docker login -u $user -p $pass
-					docker push irfanali915/sample.core.app:%JOB_NAME%_%BUILD_NUMBER%
+					docker push $user/sample.core.app:%JOB_NAME%_%BUILD_NUMBER%
 					"""
 				}
 			}
@@ -145,7 +148,9 @@ pipeline
 			steps
 			{
 			   echo "*************** Deploying latest war on Docker Containers **************"
-			   bat 'docker run --name sample.core.app -d -p 5006:80 irfanali915/sample.core.app:%JOB_NAME%_%BUILD_NUMBER%'
+			   withCredentials([usernamePassword(credentialsId: 'DockerHubCred', usernameVariable: 'user')]) {
+			   	bat 'docker run --name sample.core.app -d -p 5006:80 $user/sample.core.app:%JOB_NAME%_%BUILD_NUMBER%'
+			   }
 			}
 		}
 	}
