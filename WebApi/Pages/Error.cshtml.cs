@@ -22,6 +22,7 @@ namespace NAGP.Sample.CoreApp.Pages
         public void OnGet()
         {
             RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier;
+            _logger.LogDebug("OnGet Called");
         }
     }
 }

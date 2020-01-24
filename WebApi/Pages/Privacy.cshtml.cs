@@ -14,6 +14,7 @@ namespace NAGP.Sample.CoreApp.Pages
 
         public void OnGet()
         {
+            _logger.LogDebug("OnGet Called");
         }
     }
 }
