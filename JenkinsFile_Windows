@@ -106,14 +106,38 @@ pipeline
 			steps
 			{
 				echo "*************** Removing already running conatiners *****************"
-				sh '''
-                ContainerID=$(docker ps | grep 5006 | cut -d " " -f 1)
-                if [  $ContainerID ]
-                then
-                    docker stop $ContainerID
-                    docker rm -f $ContainerID
-                fi
-            '''
+				bat """
+					@echo off
+					ECHO ***Start***
+					ECHO Check for running container
+					docker ps>Containers
+
+					for /f "tokens=1" %%b in ('FINDSTR "5006" Containers') do (
+						ECHO Container Id: %%b
+						SET ContainerId=%%b
+						IF NOT [%ContainerId%] == [] GOTO :StopAndRemoveContainer
+					)
+					ECHO No running container found
+					ECHO Check for all container
+					docker ps -all>Containers
+
+					for /f "tokens=1" %%a in ('FINDSTR "5006" Containers') do (
+						ECHO Container Id: %%a
+						SET ContainerId=%%a
+						IF NOT [%ContainerId%] == [] GOTO :RemoveContainer
+					)
+					ECHO No container found
+					GOTO :END
+					:StopAndRemoveContainer
+					docker stop %ContainerId%
+					ECHO Container Stoped
+					:RemoveContainer
+					docker rm -f %ContainerId%
+					ECHO Container Removed
+
+					:END
+					ECHO ***End***
+				"""
 			}
 		}
 		stage ('Docker deployment')
@@ -121,15 +145,16 @@ pipeline
 			steps
 			{
 			   echo "*************** Deploying latest war on Docker Containers **************"
-			   sh 'docker run --name dotnetcoreapp_irfanali -d -p 5006:80 dtr.nagarro.com:443/dotnetcoreapp_irfanali:${BUILD_NUMBER}'
+			   bat 'docker run --name sample.core.app -d -p 5006:80 irfanali915/sample.core.app:%JOB_NAME%_%BUILD_NUMBER%'
 			}
 		}
 	}
 
-	 post {
-			always 
-			{
-				echo "*********** Executing post tasks like Email notifications *****************"
-			}
+	 post 
+	 {
+		always 
+		{
+			echo "*********** Executing post tasks like Email notifications *****************"
 		}
+	}
 }
