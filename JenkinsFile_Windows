@@ -53,7 +53,7 @@ pipeline
 			steps
 			{
 				echo "************* building the solution **********"
-				bat "dotnet build -c Release -o WebApplication4\\app\\build"
+				bat "dotnet build -c Release -o WebApi\\app\\build"
 			}	
 		}
 		stage ('SonarQube Analysis end')
@@ -75,8 +75,8 @@ pipeline
 			{
 				echo "************** Publishing app ***************"
 				bat """
-				rmdir /s /q WebApplication4\\app\\publish>NUL
-				dotnet publish -c Release -o WebApplication4\\app\\publish
+				rmdir /s /q WebApi\\app\\publish>NUL
+				dotnet publish -c Release -o WebApi\\app\\publish
 				"""
 			}
 		}
