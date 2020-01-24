@@ -15,7 +15,7 @@
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
     },
-    "WebApplication4": {
+    "NAGP.Sample.CoreApp": {
       "commandName": "Project",
       "launchBrowser": true,
       "environmentVariables": {

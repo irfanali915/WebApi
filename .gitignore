@@ -1,0 +1,11 @@
+﻿################################################################################
+# This .gitignore file was automatically created by Microsoft(R) Visual Studio.
+################################################################################
+
+*.dll
+*.user
+/WebApplication4/bin
+/WebApplication4/obj
+/Containers
+/.vs/WebApplication4
+/.sonarqube
